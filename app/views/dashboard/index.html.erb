@@ -1,0 +1,87 @@
+<% provide(:title, 'Dashboard') %>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h2 class="panel-title"><span class="glyphicon glyphicon-dashboard"></span>&nbsp;Sensor Readings</h2>
+  </div>
+  <div class="panel-body">
+    <p>
+      <% if @sensors and @sensors.count > 0 %>
+      <div class="table-responsive">
+        <table id="sensors_table" class="display" cellspacing="0">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Last Reading</th>
+              <th>Enclosure Temperature</th>
+              <th>Soil Moisture</th>
+              <th>Soil Temperature</th>
+              <th>External Temperature</th>
+              <th>External Humidity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @sensors.each do |sensor| %>
+            <tr>
+              <td><%= sensor["name"] %></td>
+              <td><%= @last_sensor_readings[sensor["id"]].nil? || @last_sensor_readings[sensor['id']]['timestamp'].to_i == 0 ? "Never" : "<span data-toggle='tooltip' data-placement='top' title='#{Time.at(@last_sensor_readings[sensor['id']]['timestamp'].to_i).utc.to_datetime}'>#{time_ago_in_words(Time.at(@last_sensor_readings[sensor['id']]['timestamp'].to_i).utc.to_datetime)} ago</span>".html_safe %></td>
+              <td><%= link_to %{<span class="glyphicon glyphicon-stats"></span>}.html_safe, "/sensor_readings/graph?sensor_id=#{sensor["id"]}&measurement=enclosure_temperature", :method => :get %>&nbsp;<%= get_reading(@last_sensor_readings[sensor['id']], "enclosure_temperature") %></td>
+              <td><%= link_to %{<span class="glyphicon glyphicon-stats"></span>}.html_safe, "/sensor_readings/graph?sensor_id=#{sensor["id"]}&measurement=soil_moisture_1", :method => :get %>&nbsp;<%= get_reading(@last_sensor_readings[sensor['id']], "soil_moisture_1") %></td>
+              <td><%= link_to %{<span class="glyphicon glyphicon-stats"></span>}.html_safe, "/sensor_readings/graph?sensor_id=#{sensor["id"]}&measurement=soil_temperature_1", :method => :get %>&nbsp;<%= get_reading(@last_sensor_readings[sensor['id']], "soil_temperature_1") %></td>
+              <td><%= link_to %{<span class="glyphicon glyphicon-stats"></span>}.html_safe, "/sensor_readings/graph?sensor_id=#{sensor["id"]}&measurement=external_temperature", :method => :get %>&nbsp;<%= get_reading(@last_sensor_readings[sensor['id']], "external_temperature") %></td>
+              <td><%= link_to %{<span class="glyphicon glyphicon-stats"></span>}.html_safe, "/sensor_readings/graph?sensor_id=#{sensor["id"]}&measurement=external_humidity", :method => :get %>&nbsp;<%= get_reading(@last_sensor_readings[sensor['id']], "external_humidity") %></td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      <% else %>
+        <i><ul>No registered sensors</ul></i>
+      <% end %>
+    </p>
+    <p>
+      <%= link_to %{<span class="glyphicon glyphicon-cog"></span>&nbspManage Sensors}.html_safe, sensors_path, :method => :get, :class => "btn btn-sm btn-primary" %>
+    </p>
+  </div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h2 class="panel-title"><span class="glyphicon glyphicon-transfer"></span>&nbsp;Relays</h2>
+  </div>
+  <div class="panel-body">
+    <p>
+      <% if @relays and @relays.count > 0 %>
+      <div class="table-responsive">
+        <table id="relays_table" class="display" cellspacing="0">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>UUID</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @relays.each do |relay| %>
+            <tr>
+              <td><%= relay.name %></td>
+              <td><%= relay.uuid %></td>
+              <td>&nbsp;&nbsp;<%= link_to %{<span class="glyphicon glyphicon-edit"></span>&nbsp;Edit}.html_safe, edit_relay_path(relay), :class => "btn btn-sm btn-primary" %>&nbsp;&nbsp;
+              <%= link_to %{<span class="glyphicon glyphicon-trash"></span>&nbsp;Delete}.html_safe, relay, :method => :delete, :class => "btn btn-sm btn-danger", data: { confirm: 'Are you sure you want to delete this relay?' } %></td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+        </div>
+      <% else %>
+        <i><ul>No registered relays</ul></i>
+      <% end %>
+    </p>
+  <p>
+  <%= link_to %{<span class="glyphicon glyphicon-plus"></span>&nbspAdd Relay}.html_safe, new_relay_path, :method => :get, :class => "btn btn-sm btn-primary" %>
+  </p>
+</div>
+<script type="text/javascript" class="init">
+$(document).ready(function() {
+$('#sensors_table').DataTable();
+$('#relays_table').DataTable();
+} );
+</script>

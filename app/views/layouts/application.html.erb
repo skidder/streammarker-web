@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:og="http://ogp.me/ns#"
+  xmlns:fb="http://www.facebook.com/2008/fbml">
+  <head>
+    <title><%= full_title(yield(:title)) %></title>
+    <meta name="google-site-verification" content="k6JJ6jNWArkdbUxZCdxqm2fm76q8Gy6kY0aLfhtzj6U" />
+    <meta name="description" content="<%= yield(:meta_tag_description) %>">
+    <meta name="keywords" content="<%= yield(:meta_tag_keywords) %>">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0"/>
+    <meta property="og:title" content="StreamMarker">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.streammarker.com/">
+    <meta property="fb:app_id" content="562344997202618">
+    <meta property="og:description" content="Send environmental sensor readings to the cloud with StreamMarker">
+    <fb:like href="http://developers.facebook.com/" width="450" height="80">
+    <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+    <%= stylesheet_link_tag    "https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css" %>
+
+    <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+    <%= javascript_include_tag '//code.jquery.com/jquery-1.11.3.min.js' %>
+    <%= javascript_include_tag '//code.jquery.com/jquery-migrate-1.2.1.min.js' %>
+    <%= javascript_include_tag '//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js' %>
+    <%= csrf_meta_tags %>
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script>
+    $(document).on('ready page:load', function() {
+    Prism.highlightAll();
+    });
+    </script>
+  </head>
+  <body class="<%= content_for?(:body_class) ? yield(:body_class) : 'main_panel' %>">
+    <%= render partial: "layouts/header" %>
+    <div class="container">
+      <%= render partial: "layouts/flash_messages", flash: flash %>
+      <%= yield %>
+      <%= render partial: "layouts/footer" %>
+    </div>
+  </body>
+</html>

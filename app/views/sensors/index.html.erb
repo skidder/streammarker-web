@@ -1,0 +1,48 @@
+<% provide(:title, 'Manage Sensors') %>
+<h1>Manage Sensors</h1>
+<div class="well well-lg">
+  <% if @sensors and @sensors.count > 0 %>
+  <div class="table-responsive">
+    <table id="sensors_table" class="display" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Sample Frequency (seconds)</th>
+          <th>Location (Lat/Long)</th>
+          <th>State</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tfoot>
+        <tr>
+          <th>Name</th>
+          <th>Sample Frequency (seconds)</th>
+          <th>Location (Lat/Long)</th>
+          <th>State</th>
+          <th>Actions</th>
+        </tr>
+      </tfoot>
+      <tbody>
+        <% @sensors.each do |sensor| %>
+        <tr>
+          <td><%= sensor["name"] %></td>
+          <td><%= sensor["sample_frequency"] %></td>
+          <td><%= sensor_location(sensor) %></td>
+          <td><%= sensor["state"].to_s.capitalize %></td>
+          <td>
+            <%= link_to %{<span class="glyphicon glyphicon-cog"></span>&nbspEdit}.html_safe, edit_sensor_path(sensor['id']), :class => "btn btn-sm btn-primary" %>
+          </td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+    </div>
+  <% else %>
+<i><ul>No registered sensors</ul></i>
+<% end %>
+</div>
+<script type="text/javascript" class="init">
+  $(document).ready(function() {
+    $('#sensors_table').DataTable();
+  } );
+</script>

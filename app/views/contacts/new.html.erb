@@ -1,0 +1,60 @@
+<% provide(:title, 'Contact Us') %>
+<div class="row">
+  <div class="col-sm-8">
+    <h1>Who We Are</h1>
+    <div class="well well-lg">
+      StreamMarker was started in 2015 by Scott Kidder, a lifelong resident of the San Francisco Bay Area and a software engineer with extensive experience with cloud and embedded software development. Scott has applied his experience building cloud-based video encoding services to the problem of moving data from wireless sensors to popular cloud services.  The result is a highly-scalable service that makes it easy to collect environmental measurements and integrate them with the most popular cloud computing services.
+    </div>
+    <h1>Contact Us</h1>
+    <div class="well well-lg">
+      <%= form_for(@contact) do |f| %>
+      <% if @contact.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@contact.errors.count, "error") %> prohibited this message from being sent:</h2>
+        <ul>
+          <% @contact.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+      <% end %>
+      <div class="form-group">
+        <div class="row">
+          <div class="col-sm-4">
+            <%= f.label :name %><br>
+            <%= f.text_field :name, :class => 'form-control' %>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="row">
+          <div class="col-sm-4">
+            <%= f.label :email %><br>
+            <%= f.text_field :email, :class => 'form-control' %>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="row">
+          <div class="col-sm-3">
+            <%= f.label :phone_number %><br>
+            <%= f.text_field :phone_number, :class => 'form-control' %>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="row">
+          <div class="col-sm-8">
+            <%= f.label :message %><br>
+            <%= f.text_area :message, :rows => 5, :class => 'form-control' %>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <%= f.submit :value=> "Send message", :class => "btn btn-sm btn-primary" %>
+        <%= link_to "Cancel", static_pages_home_path, :class => "btn btn-sm btn-default" %>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>

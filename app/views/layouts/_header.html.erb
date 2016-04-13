@@ -1,0 +1,40 @@
+<div class="navbar navbar-default" role="navigation">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+    <span class="sr-only">Toggle navigation</span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    </button>
+    <%= link_to "StreamMarker", static_pages_home_path, :class => "navbar-brand" %>
+  </div>
+  <div class="navbar-collapse collapse">
+    <ul class="nav navbar-nav">
+      <% if !signed_in? %>
+      <li><%= link_to "Sign Up", new_user_path, :method => :get %></li>
+      <% else %>
+      <li><%= link_to "Dashboard", dashboard_path, :method => :get %></li>
+      <% end %>
+      <li><%= link_to "Contact Us", new_contact_path, :method => :get %></li>
+    </ul>
+    <ul class="navbar-form navbar-right">
+      <% if signed_in? %>
+      <%= link_to %{<span class="glyphicon glyphicon-user"></span>&nbsp;Profile}.html_safe, edit_user_path(current_user), :method => :get,  :class => "btn btn-sm btn-info" %>
+      <%= link_to "Sign out", signout_path, :method => :delete, :class => "btn btn-sm btn-primary" %>
+    </div>
+    <% else %>
+    <%= form_for(:session, :url => sessions_path) do |f| %>
+    <div class="form-group">
+      <%= f.text_field :email, :class => 'form-control', :placeholder => "Email" %>
+    </div>
+    <div class="form-group">
+      <%= f.password_field :password, :class => 'form-control', :placeholder => "Password" %>
+    </div>
+    <div class="form-group">
+      <%= f.submit "Sign in", :class => "btn btn-sm btn-primary" %>
+    </div>
+    <% end %>
+    <% end %>
+  </ul>
+</div>
+</div>

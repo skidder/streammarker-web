@@ -1,0 +1,38 @@
+<% provide(:title, 'Sensor Configuration') %>
+<div class="well well-lg">
+  <p>
+    <div class="row">
+      <div class="col-md-8">
+        <b>Sensor Name:</b>&nbsp;<%= @sensor.name %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <b>UUID:</b>&nbsp;<%= @sensor.uuid %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <b>Latitude:</b>&nbsp;<%= @sensor.latitude %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <b>Longitude:</b>&nbsp;<%= @sensor.longitude %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <b>Sample Frequency:</b>&nbsp;<%= @sensor.sample_frequency %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <b>State:</b>&nbsp;<%= @sensor.state %>
+      </div>
+    </div>
+  </p>
+  <div class="form-group">
+    <%= link_to "Done", dashboard_path, :class => "btn btn-sm btn-primary btn-default" %>
+  </div>
+</div>

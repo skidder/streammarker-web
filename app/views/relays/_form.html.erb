@@ -1,0 +1,34 @@
+<div class="well well-lg">
+  <%= form_for(@relay) do |f| %>
+  <% if @relay.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@relay.errors.count, "error") %> prohibited this relay from being saved:</h2>
+    <ul>
+      <% @relay.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+  <% end %>
+  <div class="form-group">
+    <div class="row">
+      <div class="col-md-4">
+        <%= f.label :name, "Relay Name" %><br>
+        <%= f.text_field :name, :class => 'form-control' %>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="row">
+      <div class="col-md-6">
+        <%= f.label :uuid, "Relay ID (UUID)" %><br>
+        <%= f.text_field :uuid, :class => 'form-control' %>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <%= f.submit :class => "btn btn-sm btn-primary" %>
+    <%= link_to "Cancel", dashboard_path, :class => "btn btn-sm btn-default" %>
+  </div>
+  <% end %>
+</div>

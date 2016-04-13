@@ -1,0 +1,18 @@
+<div class="well well-lg">
+  <% provide(:title, 'Relay Configuration') %>
+  <p>
+    <div class="row">
+      <div class="col-md-8">
+        <b>Relay Name:</b>&nbsp;<%= @relay.name %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <b>UUID:</b>&nbsp;<%= @relay.uuid %>
+      </div>
+    </div>
+  </p>
+  <div class="form-group">
+    <%= link_to "Done", dashboard_path, :class => "btn btn-sm btn-primary btn-default" %>
+  </div>
+</div>

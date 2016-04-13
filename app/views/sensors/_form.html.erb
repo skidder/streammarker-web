@@ -1,0 +1,72 @@
+<script>
+function disable_location_inputs() {
+  $("input").prop('disabled', true);
+}
+function enable_location_inputs() {
+  $("input").prop('disabled', false);
+}
+</script>
+<div class="well well-lg">
+  <%= form_for(@sensor, url: sensor_path(@sensor), html: {method: "patch"}) do |f| %>
+  <% if @sensor.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@sensor.errors.count, "error") %> prevented this sensor from being saved:</h2>
+    <ul>
+      <% @sensor.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+  <% end %>
+  <div class="form-group">
+    <div class="row">
+      <div class="col-md-4">
+        <%= f.label :name, "Sensor Name" %><br>
+        <%= f.text_field :name, :class => 'form-control' %>
+      </div>
+    </div>
+  </div>
+  <div class="checkbox">
+    <label>
+      <%= f.check_box :location_enabled %>&nbsp;Location Enabled
+    </label>
+  </div>
+  <div class="form-group">
+    <div class="row">
+      <div class="col-md-4">
+        <%= f.label :name, "Latitude" %><br>
+        <%= f.text_field :latitude, :class => 'form-control' %>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="row">
+      <div class="col-md-4">
+        <%= f.label :name, "Longitude" %><br>
+        <%= f.text_field :longitude, :class => 'form-control' %>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="row">
+      <div class="col-md-4">
+        <%= f.label :name, "Sample Frequency (seconds between samples)" %><br>
+        <%= f.text_field :sample_frequency, :class => 'form-control' %>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="row">
+      <div class="col-md-4">
+        <%= f.label :state, "State" %>
+        <%= f.select "state", options_for_select([ "Active", "Inactive" ], @sensor.state.capitalize) %>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <%= f.hidden_field :id, :value=>@sensor.uuid %>
+    <%= f.submit "Update Sensor", :class => "btn btn-sm btn-primary" %>
+    <%= link_to "Cancel", sensors_path, :class => "btn btn-sm btn-default" %>
+  </div>
+  <% end %>
+</div>

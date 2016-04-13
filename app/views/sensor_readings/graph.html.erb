@@ -1,0 +1,124 @@
+<% provide(:title, 'Sensor Readings Graph') %>
+<%= javascript_include_tag '//code.highcharts.com/highcharts.js' %>
+<%= javascript_include_tag '//code.highcharts.com/highcharts-more.js' %>
+<%= javascript_include_tag '//code.highcharts.com/modules/exporting.js' %>
+<%= javascript_include_tag "export-csv", "data-turbolinks-track" => true %>
+
+<script>
+$(function () {
+    $.getJSON('/sensor_readings/query?sensor_id=<%= @sensor_id %>&measurement=<%= @measurement %>&start_time=<%= @start_time %>', function (data) {
+        Highcharts.setOptions({
+            global: {
+                timezoneOffset: <%= @tz_offset_minutes %>
+            }
+        });
+        $('#container').highcharts({
+            chart: {
+                zoomType: 'x',
+                animation: false,
+                events: {
+                    load: function () {
+                        var series = this.series[0];
+                        setInterval(function () {
+                            $.getJSON('/sensor_readings/query?sensor_id=<%= @sensor_id %>&measurement=<%= @measurement %>&start_time=<%= @sensor["sample_frequency"].to_i %>', function (incremental_update) {
+                                if ((typeof incremental_update !== 'undefined') && (incremental_update !== null)) {
+                                    $.each(incremental_update, function( index, value ) {
+                                        series.addPoint([value[0],value[1]], true, true);
+                                    });
+                                }
+                            });
+                        }, <%= @sensor['sample_frequency'].to_i * 1000 %>);
+                    }
+                }
+            },
+            title: {
+                text: '<%= sensor_name(@sensor['name']) %> - <%= @reading_name %>'
+            },
+            xAxis: {
+                type: 'datetime',
+                plotBands: [
+                <% @solar_events.each do |e| %>
+                {
+                  from: <%= e[:sunrise] %>,
+                  to:  <%= e[:sunset] %>,
+                  color: 'rgba(68, 170, 213, .2)'
+                }<% unless e.equal? @solar_events.last %>,<% end %>
+                <% end %>
+                ]
+            },
+            yAxis: {
+                title: {
+                    text: '<%= @reading_unit %>'
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            plotOptions: {
+                area: {
+                    fillColor: {
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
+                        stops: [
+                            [0, Highcharts.getOptions().colors[0]],
+                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                        ]
+                    },
+                    marker: {
+                        radius: 2
+                    },
+                    lineWidth: 1,
+                    states: {
+                        hover: {
+                            lineWidth: 1
+                        }
+                    },
+                    threshold: null
+                }
+            },
+
+            series: [{
+                type: 'spline',
+                name: '<%= @reading_unit %>',
+                data: data,
+                animation: false
+            }]
+        });
+    });
+});
+</script>
+
+<div class="row">
+    <div class="col-xs-6">
+        <!-- Split button -->
+        <div class="btn-group">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          The Past <%=  time_ago(@start_time.to_i.seconds.ago, '').split.map(&:capitalize).join(' ') %>&nbsp;<span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li><%= link_to "The Past Hour", "/sensor_readings/graph?sensor_id=#{@sensor_id}&measurement=#{@measurement}&start_time=#{1.hour.seconds}", :method => :get %></li>
+            <li><%= link_to "The Past 4 Hours", "/sensor_readings/graph?sensor_id=#{@sensor_id}&measurement=#{@measurement}&start_time=#{4.hours.seconds}", :method => :get %></li>
+            <li><%= link_to "The Past Day", "/sensor_readings/graph?sensor_id=#{@sensor_id}&measurement=#{@measurement}&start_time=#{1.day.seconds}", :method => :get %></li>
+            <li><%= link_to "The Past 2 Days", "/sensor_readings/graph?sensor_id=#{@sensor_id}&measurement=#{@measurement}&start_time=#{2.days.seconds}", :method => :get %></li>
+            <li><%= link_to "The Past 7 Days", "/sensor_readings/graph?sensor_id=#{@sensor_id}&measurement=#{@measurement}&start_time=#{7.days.seconds}", :method => :get %></li>
+            <li><%= link_to "The Past 1 Month", "/sensor_readings/graph?sensor_id=#{@sensor_id}&measurement=#{@measurement}&start_time=#{30.days.seconds}", :method => :get %></li>
+          </ul>
+        </div>
+    </div>
+    <div class="col-xs-6">
+        <% if @measurement.include?("temperature") %>
+            <div class="btn-group navbar-right" role="group" aria-label="temperature_scale">
+              <%= link_to "Celsius", "/sensor_readings/graph?sensor_id=#{@sensor_id}&measurement=#{@measurement}&temperature_scale=celsius", :class => "btn btn-default #{@temperature_scale == 'celsius' ? 'disabled' : ''}", :method => "get" %>
+              <%= link_to "Fahrenheit", "/sensor_readings/graph?sensor_id=#{@sensor_id}&measurement=#{@measurement}&temperature_scale=fahrenheit", :class => "btn btn-default #{@temperature_scale == 'fahrenheit' ? 'disabled' : ''}", :method => "get" %>
+            </div>
+        <% end %>
+    </div>
+</div>
+<p></p>
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<small>Latitude/Longitude: <%= @sensor['latitude'] %>,&nbsp;<%= @sensor['longitude'] %></small><br>
+<small>Timezone: <%= @sensor['timezone_id'] %></small>
